@@ -303,7 +303,16 @@
       gap: 12px;
       cursor: pointer;
       user-select: none;
-      transition: opacity 0.3s ease, transform var(--spring);
+      padding: 14px 11px;
+      border: 1px solid transparent;
+      border-radius: var(--radius-full);
+      background:
+        linear-gradient(var(--surface-glass-header), var(--surface-glass-header)) padding-box,
+        linear-gradient(160deg, rgba(56, 189, 248, 0.72), rgba(52, 211, 153, 0.5), rgba(251, 191, 36, 0.38)) border-box;
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      box-shadow: var(--shadow-card), 0 0 20px rgba(56, 189, 248, 0.12);
+      transition: opacity 0.25s ease, transform 0.25s ease, box-shadow 0.25s ease;
       opacity: 0;
       pointer-events: none;
     }
@@ -311,6 +320,9 @@
     .right-to-top-control.visible {
       opacity: 1;
       pointer-events: auto;
+      background-size: 100% 100%, 300% 300%;
+      background-position: center, 0% 50%;
+      animation: navNeonBorderFlow 8s ease-in-out infinite alternate;
     }
 
     .to-top-label {
@@ -328,9 +340,14 @@
       transform: translateY(-4px);
     }
 
+    .right-to-top-control.visible:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-hover), 0 0 24px rgba(56, 189, 248, 0.2);
+    }
+
     .to-top-progress-track {
-      width: 2px;
-      height: 80px;
+      width: 3px;
+      height: 84px;
       background: rgba(148, 163, 184, 0.25);
       border-radius: 2px;
       position: relative;
@@ -772,6 +789,22 @@
       transition: padding var(--spring), box-shadow var(--spring);
       position: relative;
       z-index: 1;
+      isolation: isolate;
+    }
+
+    .nav-pill-shell > * {
+      position: relative;
+      z-index: 1;
+    }
+
+    @keyframes navNeonBorderFlow {
+      from {
+        background-position: center, 0% 50%;
+      }
+
+      to {
+        background-position: center, 100% 50%;
+      }
     }
 
     .nav-pill-shell.scrolled {
@@ -902,20 +935,48 @@
     .mobile-nav-panel {
       position: fixed;
       inset: 0;
-      background: rgba(6, 8, 15, 0.94);
-      backdrop-filter: blur(24px);
-      -webkit-backdrop-filter: blur(24px);
+      min-height: 100vh;
+      min-height: 100dvh;
+      overflow-x: hidden;
+      overflow-y: auto;
+      overscroll-behavior: contain;
+      background: rgba(6, 8, 15, 0.985);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
       z-index: 700;
       display: flex;
       flex-direction: column;
       justify-content: center;
       align-items: center;
-      gap: 18px;
+      gap: clamp(6px, 1.25vh, 12px);
       opacity: 0;
       pointer-events: none;
-      transition: opacity 0.3s ease, transform 0.3s ease;
+      transition: opacity 0.22s ease, transform 0.28s cubic-bezier(0.2, 0.75, 0.25, 1);
       transform: translate3d(0, -20px, 0);
-      padding: 24px;
+      padding: max(24px, env(safe-area-inset-top)) 24px max(24px, env(safe-area-inset-bottom));
+      isolation: isolate;
+      scrollbar-width: none;
+    }
+
+    .mobile-nav-panel::-webkit-scrollbar {
+      display: none;
+    }
+
+    .mobile-nav-panel::before {
+      content: '';
+      position: fixed;
+      inset: 10px;
+      z-index: -1;
+      border: 2px solid transparent;
+      border-radius: 25px;
+      background:
+        linear-gradient(rgba(6, 8, 15, 0.985), rgba(6, 8, 15, 0.985)) padding-box,
+        linear-gradient(135deg, #38bdf8, #34d399, #fbbf24, #f472b6, #818cf8, #38bdf8) border-box;
+      background-size: 100% 100%, 300% 300%;
+      background-position: center, 0% 50%;
+      animation: navNeonBorderFlow 9s ease-in-out infinite alternate;
+      box-shadow: 0 0 26px rgba(56, 189, 248, 0.16), inset 0 0 22px rgba(52, 211, 153, 0.035);
+      pointer-events: none;
     }
 
     .mobile-nav-panel.open {
@@ -930,29 +991,51 @@
       right: 28px;
       width: 44px;
       height: 44px;
+      z-index: 2;
       border-radius: 50%;
-      background: rgba(255, 255, 255, 0.15);
-      border: 1px solid rgba(255, 255, 255, 0.2);
+      background:
+        linear-gradient(rgba(15, 23, 42, 0.96), rgba(15, 23, 42, 0.96)) padding-box,
+        linear-gradient(145deg, #38bdf8, #34d399, #f472b6) border-box;
+      border: 1px solid transparent;
       color: #ffffff;
       display: flex;
       align-items: center;
       justify-content: center;
       font-size: 1.3rem;
       cursor: pointer;
+      box-shadow: 0 0 16px rgba(56, 189, 248, 0.14);
+      transition: box-shadow 0.2s ease, transform 0.2s ease;
+    }
+
+    .mobile-nav-close-btn:active {
+      transform: scale(0.96);
+      box-shadow: 0 0 20px rgba(56, 189, 248, 0.24);
     }
 
     .mobile-nav-panel a {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: min(100%, 300px);
+      min-height: 42px;
       text-decoration: none;
       color: #f8fafc;
       font-weight: 700;
-      font-size: 1.45rem;
-      padding: 8px 24px;
+      font-size: clamp(1.05rem, 4.8vw, 1.3rem);
+      line-height: 1.2;
+      text-align: center;
+      padding: 7px 16px;
+      border: 1px solid transparent;
       border-radius: var(--radius-full);
-      transition: background 0.2s ease;
+      transition: color 0.2s ease, background-color 0.2s ease, border-color 0.2s ease;
     }
 
     .mobile-nav-panel a:hover {
-      background: rgba(56, 189, 248, 0.2);
+      color: #ffffff;
+      background: rgba(56, 189, 248, 0.1);
+      border-color: rgba(56, 189, 248, 0.3);
+      box-shadow: 0 0 18px rgba(56, 189, 248, 0.1);
     }
 
     /* Hero Section */
@@ -1081,6 +1164,8 @@
       align-items: center;
       justify-content: center;
       margin: 0 auto;
+      overflow-x: clip;
+      overflow-y: visible;
     }
 
     .hero-backdrop-glow-layer {
@@ -1096,8 +1181,11 @@
 
     .orbit-ring-track {
       position: absolute;
-      width: 460px;
-      height: 460px;
+      top: 50%;
+      left: 50%;
+      width: 400px;
+      height: 400px;
+      margin: -200px 0 0 -200px;
       border-radius: 50%;
       border: 1.5px dashed rgba(0, 113, 227, 0.3);
       animation: rotateOrbitRing 68s linear infinite;
@@ -1152,8 +1240,11 @@
 
     .orbit-tech-badge-holder {
       position: absolute;
-      width: 460px;
-      height: 460px;
+      top: 50%;
+      left: 50%;
+      width: 400px;
+      height: 400px;
+      margin: -200px 0 0 -200px;
       border-radius: 50%;
       animation: rotateOrbitRing 68s linear infinite;
       pointer-events: none;
@@ -1195,31 +1286,31 @@
 
     .pos-top {
       top: -25px;
-      left: 205px;
+      left: 175px;
     }
 
     .pos-top-right {
-      top: 78px;
+      top: 68px;
       right: 0px;
     }
 
     .pos-bottom-right {
-      bottom: 78px;
+      bottom: 68px;
       right: 0px;
     }
 
     .pos-bottom {
       bottom: -25px;
-      left: 205px;
+      left: 175px;
     }
 
     .pos-bottom-left {
-      bottom: 78px;
+      bottom: 68px;
       left: 0px;
     }
 
     .pos-top-left {
-      top: 78px;
+      top: 68px;
       left: 0px;
     }
 
@@ -1524,6 +1615,37 @@
       background: var(--surface-inset);
       border: 1px solid var(--border-subtle);
       border-radius: var(--radius-full);
+    }
+
+    @media (max-width: 1024px) {
+      .skills-filter-container {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        width: 100%;
+        gap: 6px;
+        margin-bottom: 24px;
+        padding: 6px;
+        border-radius: 18px;
+      }
+
+      .skill-filter-btn {
+        min-height: 48px;
+        padding: 7px 6px;
+        border-radius: 12px;
+        font-size: 0.76rem;
+        line-height: 1.2;
+        white-space: normal;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .skills-filter-container {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .skill-filter-btn:first-child {
+        grid-column: 1 / -1;
+      }
     }
 
     .skill-filter-btn {
@@ -1952,7 +2074,7 @@
     }
 
     /* Mobile Alternate UI for Methodology (Clean Vertical Stack Cards) */
-    @media (max-width: 768px) {
+    @media (max-width: 1024px) {
       .methodology-pipeline-wrapper {
         padding: 24px 16px;
         overflow-x: visible;
@@ -1973,14 +2095,27 @@
       .method-step-node {
         width: 100%;
         display: grid;
-        grid-template-columns: 56px 1fr;
+        grid-template-columns: 52px minmax(0, 1fr);
         align-items: center;
         text-align: left;
         background: var(--surface-inset);
-        padding: 16px;
-        border-radius: 20px;
+        padding: 14px;
+        border-radius: 16px;
         border: 1px solid var(--border-subtle);
-        gap: 16px;
+        gap: 4px 14px;
+      }
+
+      .method-step-icon {
+        grid-column: 1;
+        grid-row: 1 / span 3;
+        align-self: start;
+        margin-top: 3px;
+      }
+
+      .method-phase-num,
+      .method-step-title,
+      .method-step-desc {
+        grid-column: 2;
       }
 
       .method-step-icon {
@@ -2018,14 +2153,26 @@
       gap: 12px;
     }
 
+    .work-selector-carousel {
+      display: contents;
+    }
+
+    .principle-carousel-controls,
+    .principle-carousel-status {
+      display: none;
+    }
+
     .principle-selector-btn {
       display: flex;
       align-items: center;
       gap: 16px;
       padding: 18px 22px;
+      width: 100%;
       border-radius: 20px;
       background: var(--surface-card);
       border: 1px solid var(--border-card);
+      color: var(--text-body);
+      font: inherit;
       text-align: left;
       transition: transform var(--spring), border-color 0.2s ease;
       cursor: pointer;
@@ -2060,14 +2207,22 @@
       color: #fff;
     }
 
-    .principle-btn-text h4 {
+    .principle-btn-text {
+      display: block;
+      min-width: 0;
+      flex: 1;
+    }
+
+    .principle-btn-text .principle-title {
+      display: block;
       font-size: 1rem;
       font-weight: 700;
       color: var(--text-heading);
       margin-bottom: 2px;
     }
 
-    .principle-btn-text p {
+    .principle-btn-text .principle-summary {
+      display: block;
       font-size: 0.8rem;
       color: var(--text-muted);
     }
@@ -2146,9 +2301,12 @@
         display: flex;
         flex-direction: row;
         overflow-x: auto;
-        padding-bottom: 8px;
-        gap: 8px;
+        padding: 2px 2px 10px;
+        gap: 0;
         scrollbar-width: none;
+        scroll-snap-type: x mandatory;
+        overscroll-behavior-x: contain;
+        border-radius: 18px;
       }
 
       .work-selector-list::-webkit-scrollbar {
@@ -2156,14 +2314,82 @@
       }
 
       .principle-selector-btn {
-        padding: 10px 14px;
-        white-space: nowrap;
-        border-radius: 14px;
-        flex-shrink: 0;
+        flex: 0 0 100%;
+        min-width: 0;
+        min-height: 132px;
+        padding: 18px;
+        white-space: normal;
+        border-radius: 18px;
+        scroll-snap-align: center;
+        scroll-snap-stop: always;
+        box-shadow: var(--shadow-ambient);
       }
 
-      .principle-btn-text p {
-        display: none;
+      .principle-btn-text .principle-summary {
+        display: block;
+        white-space: normal;
+      }
+
+      .work-selector-carousel {
+        display: flex;
+        min-width: 0;
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      .principle-carousel-controls {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 12px;
+        padding: 0 2px;
+      }
+
+      .principle-carousel-status {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        color: var(--text-muted);
+        font-family: var(--font-code);
+        font-size: 0.76rem;
+        font-weight: 700;
+      }
+
+      .principle-step-progress {
+        width: 58px;
+        height: 4px;
+        overflow: hidden;
+        border-radius: 4px;
+        background: rgba(148, 163, 184, 0.25);
+      }
+
+      .principle-step-progress span {
+        display: block;
+        width: 20%;
+        height: 100%;
+        border-radius: inherit;
+        background: var(--color-blue);
+        transition: width 0.25s ease;
+      }
+
+      .principle-arrow-btn {
+        width: 42px;
+        height: 42px;
+        flex: 0 0 42px;
+        display: grid;
+        place-items: center;
+        border: 1px solid var(--border-subtle);
+        border-radius: 14px;
+        background: var(--surface-card);
+        color: var(--text-heading);
+        font-size: 0.9rem;
+        box-shadow: var(--shadow-ambient);
+        cursor: pointer;
+      }
+
+      .principle-arrow-btn:disabled {
+        opacity: 0.4;
+        cursor: not-allowed;
       }
 
       .blueprint-preview-panel {
@@ -2500,10 +2726,11 @@
       gap: 16px;
       transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
       will-change: transform;
+      touch-action: pan-y;
     }
 
     .cert-slide-card {
-      flex: 0 0 calc((100% - 32px) / 3);
+      flex: 0 0 calc((100% - 16px) / 2);
       background: var(--surface-card);
       border: 1px solid var(--border-subtle);
       border-radius: 22px;
@@ -2755,6 +2982,121 @@
       min-width: 18px;
       background: linear-gradient(90deg, var(--color-blue), var(--color-green));
       opacity: 0.65;
+    }
+
+    .cursor-stars-canvas {
+      position: fixed;
+      inset: 0;
+      z-index: 20;
+      width: 100%;
+      height: 100%;
+      display: none;
+      pointer-events: none;
+    }
+
+    @media (hover: hover) and (pointer: fine) and (min-width: 1025px) {
+      [data-theme="dark"] .cursor-stars-canvas {
+        display: block;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .cursor-stars-canvas {
+        display: none !important;
+      }
+
+      .nav-pill-shell::after {
+        animation: none !important;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .contact-hero-banner {
+        padding: 30px 18px;
+      }
+
+      .contact-connection-graphic {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        align-items: stretch;
+        gap: 8px;
+        padding: 12px;
+      }
+
+      .contact-graphic-node {
+        min-width: 0;
+        min-height: 108px;
+        flex-direction: column;
+        justify-content: center;
+        gap: 8px;
+        padding: 10px 4px;
+        border: 1px solid var(--border-subtle);
+        border-radius: 14px;
+        background: var(--surface-card);
+        text-align: center;
+        white-space: normal;
+      }
+
+      .contact-graphic-node:nth-of-type(2) .contact-graphic-icon {
+        color: var(--color-green);
+      }
+
+      .contact-graphic-node:nth-of-type(3) .contact-graphic-icon {
+        color: #f59e0b;
+      }
+
+      .contact-graphic-icon {
+        width: 46px;
+        height: 46px;
+        border-radius: 15px;
+        font-size: 1.1rem;
+      }
+
+      .contact-graphic-line {
+        display: none;
+      }
+
+      .contact-form-card {
+        min-height: 570px;
+        padding: 26px 20px;
+        border-radius: 24px;
+        gap: 18px;
+      }
+
+      .contact-hero-banner .contact-form-card {
+        min-height: 620px;
+        padding: 28px 22px;
+        gap: 18px;
+      }
+
+      .contact-hero-banner .contact-form-card .form-input-control {
+        min-height: 54px;
+        padding: 14px 16px;
+        font-size: 1rem;
+      }
+
+      .contact-hero-banner .contact-form-card .form-textarea {
+        min-height: 190px;
+      }
+
+      .contact-hero-banner .contact-form-card .btn-send-message,
+      .contact-hero-banner .contact-form-card .btn-whatsapp-message {
+        min-height: 54px;
+      }
+    }
+
+    @media (max-width: 360px) {
+      .contact-hero-banner .contact-connection-graphic {
+        grid-template-columns: 1fr;
+      }
+
+      .contact-hero-banner .contact-graphic-node {
+        min-height: 68px;
+        flex-direction: row;
+        justify-content: flex-start;
+        gap: 12px;
+        padding: 10px 12px;
+        text-align: left;
+      }
     }
 
     .contact-action-card {
@@ -3253,6 +3595,57 @@
         grid-template-columns: 1fr;
       }
 
+      .hero-orbit-stage {
+        --hero-orbit-size: min(400px, calc(100vw - 100px));
+        max-width: 440px;
+      }
+
+      .orbit-ring-track,
+      .orbit-tech-badge-holder {
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        width: var(--hero-orbit-size);
+        height: var(--hero-orbit-size);
+        margin: auto;
+      }
+
+      .orbit-badge-node {
+        width: 46px;
+        height: 46px;
+      }
+
+      .pos-top {
+        top: -23px;
+        left: calc(50% - 23px);
+      }
+
+      .pos-top-right {
+        top: calc(14.65% - 23px);
+        right: calc(14.65% - 23px);
+      }
+
+      .pos-bottom-right {
+        bottom: calc(14.65% - 23px);
+        right: calc(14.65% - 23px);
+      }
+
+      .pos-bottom {
+        bottom: -23px;
+        left: calc(50% - 23px);
+      }
+
+      .pos-bottom-left {
+        bottom: calc(14.65% - 23px);
+        left: calc(14.65% - 23px);
+      }
+
+      .pos-top-left {
+        top: calc(14.65% - 23px);
+        left: calc(14.65% - 23px);
+      }
+
       .cert-slide-card {
         flex: 0 0 calc((100% - 16px) / 2);
       }
@@ -3295,6 +3688,60 @@
         background: linear-gradient(180deg, var(--color-blue), var(--color-green));
       }
 
+      .contact-hero-banner .contact-connection-graphic {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        justify-items: stretch;
+      }
+
+      .contact-hero-banner .contact-graphic-node {
+        min-width: 0;
+        min-height: 108px;
+        flex-direction: column;
+        justify-content: center;
+        gap: 8px;
+        padding: 10px 4px;
+        border: 1px solid rgba(0, 113, 227, 0.2);
+        border-radius: 14px;
+        background: rgba(0, 113, 227, 0.055);
+        box-shadow: 0 8px 18px rgba(15, 23, 42, 0.045);
+        text-align: center;
+        white-space: normal;
+        transition: transform var(--spring), border-color 0.2s ease, background-color 0.2s ease;
+      }
+
+      .contact-hero-banner .contact-graphic-node:nth-of-type(2) {
+        border-color: rgba(16, 185, 129, 0.25);
+        background: rgba(16, 185, 129, 0.07);
+      }
+
+      .contact-hero-banner .contact-graphic-node:nth-of-type(3) {
+        border-color: rgba(245, 158, 11, 0.28);
+        background: rgba(245, 158, 11, 0.075);
+      }
+
+      .contact-hero-banner .contact-graphic-node:active {
+        transform: translateY(-2px);
+      }
+
+      .contact-hero-banner .contact-graphic-node:nth-of-type(1) .contact-graphic-icon {
+        background: rgba(0, 113, 227, 0.12);
+        color: var(--color-blue);
+      }
+
+      .contact-hero-banner .contact-graphic-node:nth-of-type(2) .contact-graphic-icon {
+        background: rgba(16, 185, 129, 0.14);
+        color: var(--color-emerald);
+      }
+
+      .contact-hero-banner .contact-graphic-node:nth-of-type(3) .contact-graphic-icon {
+        background: rgba(245, 158, 11, 0.16);
+        color: #b45309;
+      }
+
+      .contact-hero-banner .contact-graphic-line {
+        display: none;
+      }
+
       .footer-flex-row {
         grid-template-columns: 1fr;
       }
@@ -3325,22 +3772,75 @@
       }
 
       .hero-orbit-stage {
-        max-width: 320px;
-        height: 360px;
+        --hero-orbit-size: min(260px, calc(100vw - 112px));
+        max-width: 360px;
+        height: 380px;
       }
 
       .orbit-ring-track {
-        width: 340px;
-        height: 340px;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        width: var(--hero-orbit-size);
+        height: var(--hero-orbit-size);
+        margin: auto;
       }
 
       .orbit-tech-badge-holder {
-        display: none !important;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        width: var(--hero-orbit-size);
+        height: var(--hero-orbit-size);
+        margin: auto;
+      }
+
+      .orbit-badge-node {
+        width: 44px;
+        height: 44px;
+        font-size: 1.35rem;
+      }
+
+      .pos-top {
+        top: -22px;
+        left: calc(50% - 22px);
+      }
+
+      .pos-top-right {
+        top: calc(14.65% - 22px);
+        right: calc(14.65% - 22px);
+      }
+
+      .pos-bottom-right {
+        bottom: calc(14.65% - 22px);
+        right: calc(14.65% - 22px);
+      }
+
+      .pos-bottom {
+        bottom: -22px;
+        left: calc(50% - 22px);
+      }
+
+      .pos-bottom-left {
+        bottom: calc(14.65% - 22px);
+        left: calc(14.65% - 22px);
+      }
+
+      .pos-top-left {
+        top: calc(14.65% - 22px);
+        left: calc(14.65% - 22px);
       }
 
       .hero-desk-frame {
-        width: 260px;
-        height: 300px;
+        width: 230px;
+        height: 270px;
+      }
+
+      .hero-backdrop-glow-layer {
+        width: 100%;
+        height: 100%;
       }
     }
 
@@ -3382,6 +3882,64 @@
       }
     }
 
+    @media (max-width: 320px) {
+      .nav-pill-shell {
+        padding-right: 8px;
+        padding-left: 8px;
+      }
+
+      .brand-link {
+        gap: 6px;
+      }
+
+      .brand-logo {
+        width: 38px;
+      }
+
+      .brand-title-text {
+        font-size: 0.85rem;
+        white-space: nowrap;
+      }
+
+      .nav-controls-right {
+        gap: 6px;
+      }
+
+      .ios-segmented-toggle {
+        width: 46px;
+      }
+
+      .toggle-knob {
+        width: 20px;
+        height: 20px;
+      }
+
+      [data-theme="dark"] .toggle-knob {
+        transform: translate3d(20px, 0, 0);
+      }
+
+      .hamburger-btn {
+        width: 36px;
+        height: 36px;
+      }
+    }
+
+    @media (max-width: 360px) {
+      .contact-hero-banner .contact-connection-graphic {
+        grid-template-columns: minmax(0, 1fr);
+      }
+
+      .contact-hero-banner .contact-graphic-node {
+        width: 100%;
+        min-height: 68px;
+        flex-direction: row;
+        justify-content: flex-start;
+        gap: 12px;
+        padding: 10px 12px;
+        text-align: left;
+      }
+    }
+
     @media (max-width: 1024px) {
       .nav-links-menu {
         display: none;
@@ -3389,6 +3947,43 @@
 
       .hamburger-btn {
         display: flex;
+      }
+
+      .nav-pill-shell,
+      .nav-pill-shell.scrolled {
+        border: 2px solid transparent;
+        background:
+          linear-gradient(var(--surface-glass-header), var(--surface-glass-header)) padding-box,
+          linear-gradient(120deg, #38bdf8, #34d399, #fbbf24, #f472b6, #818cf8, #38bdf8) border-box;
+        background-size: 100% 100%, 300% 300%;
+        background-position: center, 0% 50%;
+        animation: navNeonBorderFlow 8s ease-in-out infinite alternate;
+        box-shadow:
+          var(--shadow-ambient),
+          0 0 0 1px rgba(56, 189, 248, 0.16),
+          0 0 18px rgba(56, 189, 248, 0.14),
+          0 0 22px rgba(244, 114, 182, 0.08);
+      }
+    }
+
+    @media (max-width: 1024px) and (max-height: 650px) {
+      .mobile-nav-panel {
+        justify-content: flex-start;
+        gap: 5px;
+        padding-top: max(72px, calc(env(safe-area-inset-top) + 54px));
+        padding-bottom: max(18px, env(safe-area-inset-bottom));
+      }
+
+      .mobile-nav-panel a {
+        min-height: 38px;
+        font-size: 1.05rem;
+        padding-top: 5px;
+        padding-bottom: 5px;
+      }
+
+      .mobile-nav-close-btn {
+        top: max(16px, env(safe-area-inset-top));
+        right: max(16px, env(safe-area-inset-right));
       }
     }
 
@@ -3405,11 +4000,29 @@
         transition: none !important;
       }
     }
+
+    .touch-sparkle-canvas {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 950;
+      pointer-events: none;
+    }
+
+    @media (min-width: 1025px), (prefers-reduced-motion: reduce) {
+      .touch-sparkle-canvas {
+        display: none;
+      }
+    }
   </style>
 
 </head>
 
 <body>
+
+  <canvas class="touch-sparkle-canvas" id="touchSparkleCanvas" aria-hidden="true"></canvas>
+  <canvas class="cursor-stars-canvas" id="cursorStarsCanvas" aria-hidden="true"></canvas>
 
   <!-- Top Global Scroll Progress Bar -->
   <div class="top-scroll-progress-bar" id="topProgressBar"></div>
@@ -3569,15 +4182,15 @@
         <i class="fa-solid fa-xmark"></i>
       </button>
       <a href="#hero" class="mobile-nav-link">Home</a>
-      <a href="#about" class="mobile-nav-link">About Me</a>
-      <a href="#skills" class="mobile-nav-link">Technical Skills</a>
-      <a href="#experience" class="mobile-nav-link">Work Experience</a>
-      <a href="#projects" class="mobile-nav-link">Featured Projects</a>
-      <a href="#methodology" class="mobile-nav-link">Full Stack Delivery</a>
+      <a href="#about" class="mobile-nav-link">About</a>
+      <a href="#skills" class="mobile-nav-link">Skills</a>
+      <a href="#experience" class="mobile-nav-link">Experience</a>
+      <a href="#projects" class="mobile-nav-link">Projects</a>
+      <a href="#methodology" class="mobile-nav-link">Methodology</a>
       <a href="#how-i-work" class="mobile-nav-link">How I Work</a>
-      <a href="#labs" class="mobile-nav-link">Open Source Labs</a>
-      <a href="#education" class="mobile-nav-link">Education & Certs</a>
-      <a href="#contact" class="mobile-nav-link">Let's Connect</a>
+      <a href="#labs" class="mobile-nav-link">Labs</a>
+      <a href="#education" class="mobile-nav-link">Education</a>
+      <a href="#contact" class="mobile-nav-link">Connect</a>
     </div>
   </header>
 
@@ -3748,7 +4361,8 @@
 
           <div class="about-headline-block">
             <div class="about-inspirational-quote">
-              “Simplicity is prerequisite for reliability.”
+              “Classical code taught me to define the possible; 
+              <br> Quantum thinking reminds me to question the boundaries.”
             </div>
             <div class="about-tags-bar">
               <span class="about-meta-badge"><i class="fa-solid fa-location-dot" style="color: #ef4444;"></i> Pune,
@@ -4351,45 +4965,59 @@
       <p class="section-desc">Practical engineering habits for building reliable, maintainable software.</p>
 
       <div class="work-principles-layout">
-        <div class="work-selector-list">
-          <div class="principle-selector-btn active" onclick="switchPrinciple(0, this)">
-            <div class="principle-badge-num">01</div>
-            <div class="principle-btn-text">
-              <h4>Requirement Analysis & Planning</h4>
-              <p>Understand requirements before writing code.</p>
-            </div>
+        <div class="work-selector-carousel">
+          <div class="work-selector-list" id="principleSelectorList" role="tablist" aria-label="Engineering principles">
+          <button type="button" class="principle-selector-btn active" id="principleTab0" role="tab" aria-selected="true" aria-controls="blueprintPanel" onclick="switchPrinciple(0, this)">
+            <span class="principle-badge-num">01</span>
+            <span class="principle-btn-text">
+              <span class="principle-title">Requirement Analysis & Planning</span>
+              <span class="principle-summary">Understand requirements before writing code.</span>
+            </span>
+          </button>
+          <button type="button" class="principle-selector-btn" id="principleTab1" role="tab" aria-selected="false" aria-controls="blueprintPanel" onclick="switchPrinciple(1, this)">
+            <span class="principle-badge-num">02</span>
+            <span class="principle-btn-text">
+              <span class="principle-title">Clean Code & Team Standards</span>
+              <span class="principle-summary">Write readable, maintainable, and well-documented code.</span>
+            </span>
+          </button>
+          <button type="button" class="principle-selector-btn" id="principleTab2" role="tab" aria-selected="false" aria-controls="blueprintPanel" onclick="switchPrinciple(2, this)">
+            <span class="principle-badge-num">03</span>
+            <span class="principle-btn-text">
+              <span class="principle-title">Database Optimization & Reliability</span>
+              <span class="principle-summary">Carefully planned queries and schema indexing</span>
+            </span>
+          </button>
+          <button type="button" class="principle-selector-btn" id="principleTab3" role="tab" aria-selected="false" aria-controls="blueprintPanel" onclick="switchPrinciple(3, this)">
+            <span class="principle-badge-num">04</span>
+            <span class="principle-btn-text">
+              <span class="principle-title">Ownership, Testing & Deployment</span>
+              <span class="principle-summary">Take features from development to delivery.</span>
+            </span>
+          </button>
+          <button type="button" class="principle-selector-btn" id="principleTab4" role="tab" aria-selected="false" aria-controls="blueprintPanel" onclick="switchPrinciple(4, this)">
+            <span class="principle-badge-num">05</span>
+            <span class="principle-btn-text">
+              <span class="principle-title">Communication & Fast Adaptation</span>
+              <span class="principle-summary">Proactive updates and rapid technical learning</span>
+            </span>
+          </button>
           </div>
-          <div class="principle-selector-btn" onclick="switchPrinciple(1, this)">
-            <div class="principle-badge-num">02</div>
-            <div class="principle-btn-text">
-              <h4>Clean Code & Team Standards</h4>
-              <p>Write readable, maintainable, and well-documented code.</p>
+          <div class="principle-carousel-controls">
+            <button type="button" class="principle-arrow-btn" id="principlePrevBtn" aria-label="Previous principle" disabled>
+              <i class="fa-solid fa-chevron-left" aria-hidden="true"></i>
+            </button>
+            <div class="principle-carousel-status" aria-live="polite">
+              <span id="principleStepPosition">01 / 05</span>
+              <span class="principle-step-progress" aria-hidden="true"><span id="principleStepProgress"></span></span>
             </div>
-          </div>
-          <div class="principle-selector-btn" onclick="switchPrinciple(2, this)">
-            <div class="principle-badge-num">03</div>
-            <div class="principle-btn-text">
-              <h4>Database Optimization & Reliability</h4>
-              <p>Carefully planned queries and schema indexing</p>
-            </div>
-          </div>
-          <div class="principle-selector-btn" onclick="switchPrinciple(3, this)">
-            <div class="principle-badge-num">04</div>
-            <div class="principle-btn-text">
-              <h4>Ownership, Testing & Deployment</h4>
-              <p>Take features from development to delivery.</p>
-            </div>
-          </div>
-          <div class="principle-selector-btn" onclick="switchPrinciple(4, this)">
-            <div class="principle-badge-num">05</div>
-            <div class="principle-btn-text">
-              <h4>Communication & Fast Adaptation</h4>
-              <p>Proactive updates and rapid technical learning</p>
-            </div>
+            <button type="button" class="principle-arrow-btn" id="principleNextBtn" aria-label="Next principle">
+              <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+            </button>
           </div>
         </div>
 
-        <div class="apple-glass-card blueprint-preview-panel" id="blueprintPanel">
+        <div class="apple-glass-card blueprint-preview-panel" id="blueprintPanel" role="tabpanel" aria-labelledby="principleTab0">
           <div>
             <div class="blueprint-header-bar">
               <span style="font-family: var(--font-code); font-size: 0.85rem; color: var(--text-muted);">ENGINEERING
@@ -4599,7 +5227,7 @@
               <h3 style="font-size: 1.85rem; font-weight: 800; letter-spacing: -0.6px; color: var(--text-heading);">
                 Certifications & <span class="text-highlight">Learning</span></h3>
 
-              <div class="cert-viewport-box" id="certViewport">
+              <div class="cert-viewport-box" id="certViewport" tabindex="0" role="region" aria-label="Certifications carousel">
                 <div class="cert-slider-track" id="certTrack">
                   <div class="cert-slide-card">
                     <div class="cert-brand-icon-box">
@@ -4790,11 +5418,16 @@
           <div>
             <form class="contact-form-card" id="contactEmailForm" onsubmit="handleSendEmailApp(event)">
               <div class="form-row-duo">
-                <input type="text" id="senderName" class="form-input-control" placeholder="Your Name" required>
-                <input type="email" id="senderEmail" class="form-input-control" placeholder="Your Email" required>
+                <input type="text" id="senderName" name="name" class="form-input-control" placeholder="Your Name" autocomplete="name" required>
+                <input type="email" id="senderEmail" name="email" class="form-input-control" placeholder="Your Email" autocomplete="email" inputmode="email" required>
               </div>
-              <input type="text" id="messageSubject" class="form-input-control" placeholder="Subject (Optional)">
-              <textarea id="messageBody" class="form-input-control form-textarea" placeholder="Your Message..."
+              <input type="text" id="messageSubject" name="subject" class="form-input-control" placeholder="Subject (Optional)" list="contactSubjectSuggestions" autocomplete="off">
+              <datalist id="contactSubjectSuggestions">
+                <option value="Job opportunity"></option>
+                <option value="Project collaboration"></option>
+                <option value="Technical question"></option>
+              </datalist>
+              <textarea id="messageBody" name="message" class="form-input-control form-textarea" placeholder="Your Message..." autocomplete="off"
                 required></textarea>
 
               <div class="contact-form-button-stack">
@@ -5201,13 +5834,39 @@
       },
     ];
 
-    function switchPrinciple(index, button) {
-      document
-        .querySelectorAll(".principle-selector-btn")
-        .forEach((btn) => btn.classList.remove("active"));
-      button.classList.add("active");
+    const principleTabs = [...document.querySelectorAll(".principle-selector-btn")];
+    const principleSelectorList = document.getElementById("principleSelectorList");
+    const principlePrevBtn = document.getElementById("principlePrevBtn");
+    const principleNextBtn = document.getElementById("principleNextBtn");
+    const principleStepPosition = document.getElementById("principleStepPosition");
+    const principleStepProgress = document.getElementById("principleStepProgress");
+    let activePrincipleIndex = 0;
 
-      const data = principlesData[index];
+    function switchPrinciple(index, button, shouldScroll = true) {
+      activePrincipleIndex = Math.max(0, Math.min(index, principleTabs.length - 1));
+      const activeButton = button || principleTabs[activePrincipleIndex];
+
+      principleTabs.forEach((tab, tabIndex) => {
+        const isActive = tabIndex === activePrincipleIndex;
+        tab.classList.toggle("active", isActive);
+        tab.setAttribute("aria-selected", String(isActive));
+        tab.tabIndex = isActive ? 0 : -1;
+      });
+      document.getElementById("blueprintPanel").setAttribute("aria-labelledby", activeButton.id);
+
+      if (shouldScroll && window.innerWidth <= 768) {
+        principleSelectorList.scrollTo({
+          left: activePrincipleIndex * principleSelectorList.clientWidth,
+          behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth",
+        });
+      }
+
+      principlePrevBtn.disabled = activePrincipleIndex === 0;
+      principleNextBtn.disabled = activePrincipleIndex === principleTabs.length - 1;
+      principleStepPosition.textContent = `${String(activePrincipleIndex + 1).padStart(2, "0")} / ${String(principleTabs.length).padStart(2, "0")}`;
+      principleStepProgress.style.width = `${((activePrincipleIndex + 1) / principleTabs.length) * 100}%`;
+
+      const data = principlesData[activePrincipleIndex];
       document.getElementById("bpTitle").textContent = data.title;
       document.getElementById("bpDesc").textContent = data.desc;
 
@@ -5220,6 +5879,38 @@
         checklistContainer.appendChild(div);
       });
     }
+
+    principlePrevBtn.addEventListener("click", () => {
+      switchPrinciple(activePrincipleIndex - 1);
+    });
+
+    principleNextBtn.addEventListener("click", () => {
+      switchPrinciple(activePrincipleIndex + 1);
+    });
+
+    principleTabs.forEach((tab, index) => {
+      tab.addEventListener("keydown", (event) => {
+        if (event.key === "ArrowRight" || event.key === "ArrowLeft") {
+          event.preventDefault();
+          const direction = event.key === "ArrowRight" ? 1 : -1;
+          const nextIndex = (activePrincipleIndex + direction + principleTabs.length) % principleTabs.length;
+          switchPrinciple(nextIndex);
+          principleTabs[nextIndex].focus();
+        }
+      });
+    });
+
+    let principleScrollFrame = 0;
+    principleSelectorList.addEventListener("scroll", () => {
+      if (window.innerWidth > 768 || principleScrollFrame) return;
+      principleScrollFrame = requestAnimationFrame(() => {
+        principleScrollFrame = 0;
+        const index = Math.round(principleSelectorList.scrollLeft / principleSelectorList.clientWidth);
+        if (index !== activePrincipleIndex) switchPrinciple(index, null, false);
+      });
+    }, { passive: true });
+
+    switchPrinciple(0, principleTabs[0], false);
 
     // 6. Responsive Certifications Slider
     const certTrack = document.getElementById("certTrack");
@@ -5234,8 +5925,7 @@
     function getVisibleCount() {
       const w = window.innerWidth;
       if (w <= 768) return 1;
-      if (w <= 1200) return 2;
-      return 3;
+      return 2;
     }
 
     function getMaxIndex() {
@@ -5276,11 +5966,66 @@
       });
     }
 
+    let certAutoplayTimer = 0;
+    let certResumeTimer = 0;
+    let certIsHovered = false;
+    let certHasFocus = false;
+    let certIsTouching = false;
+
+    function pauseCertAutoplay() {
+      window.clearInterval(certAutoplayTimer);
+      window.clearTimeout(certResumeTimer);
+    }
+
+    function startCertAutoplay() {
+      pauseCertAutoplay();
+      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches || document.hidden || certIsHovered || certHasFocus || certIsTouching) return;
+      certAutoplayTimer = window.setInterval(() => {
+        currentSlide = currentSlide >= getMaxIndex() ? 0 : currentSlide + 1;
+        repositionSlider();
+      }, 4500);
+    }
+
+    function resumeCertAutoplaySoon() {
+      pauseCertAutoplay();
+      certResumeTimer = window.setTimeout(startCertAutoplay, 5000);
+    }
+
+    const certViewport = document.getElementById("certViewport");
+    certViewport.addEventListener("pointerenter", () => {
+      certIsHovered = true;
+      pauseCertAutoplay();
+    });
+    certViewport.addEventListener("pointerleave", () => {
+      certIsHovered = false;
+      if (!certHasFocus) startCertAutoplay();
+    });
+    certViewport.addEventListener("focusin", () => {
+      certHasFocus = true;
+      pauseCertAutoplay();
+    });
+    certViewport.addEventListener("focusout", (event) => {
+      if (!certViewport.contains(event.relatedTarget)) {
+        certHasFocus = false;
+        if (!certIsHovered) startCertAutoplay();
+      }
+    });
+    certViewport.addEventListener("touchstart", () => {
+      certIsTouching = true;
+      pauseCertAutoplay();
+    }, { passive: true });
+    certViewport.addEventListener("touchend", () => {
+      certIsTouching = false;
+      if (!certIsHovered && !certHasFocus) resumeCertAutoplaySoon();
+    }, { passive: true });
+    document.addEventListener("visibilitychange", startCertAutoplay);
+
     nextBtn.addEventListener("click", () => {
       if (currentSlide < getMaxIndex()) {
         currentSlide++;
         repositionSlider();
       }
+      resumeCertAutoplaySoon();
     });
 
     prevBtn.addEventListener("click", () => {
@@ -5288,6 +6033,7 @@
         currentSlide--;
         repositionSlider();
       }
+      resumeCertAutoplaySoon();
     });
 
     window.addEventListener("resize", () => {
@@ -5297,6 +6043,7 @@
 
     updateDots();
     repositionSlider();
+    startCertAutoplay();
 
     // 7. Modals & Clipboard Utilities
     const modalElem = document.getElementById("appleModal");
@@ -5408,6 +6155,207 @@
       scrollObserver.observe(el);
     });
 
+  </script>
+
+  <script>
+    const cursorStarsCanvas = document.getElementById("cursorStarsCanvas");
+    const cursorStarsContext = cursorStarsCanvas.getContext("2d");
+    const desktopPointer = window.matchMedia("(hover: hover) and (pointer: fine) and (min-width: 1025px)");
+    const cursorStarColors = ["#38bdf8", "#34d399", "#fbbf24", "#f472b6", "#a78bfa"];
+    const cursorStars = [];
+    let previousPointer = null;
+    let cursorStarsFrame = 0;
+    let cursorStarsLastFrame = 0;
+
+    function resizeCursorStarsCanvas() {
+      const pixelRatio = Math.min(window.devicePixelRatio || 1, 1.5);
+      cursorStarsCanvas.width = Math.round(window.innerWidth * pixelRatio);
+      cursorStarsCanvas.height = Math.round(window.innerHeight * pixelRatio);
+      cursorStarsContext.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
+    }
+
+    function drawCursorStars(timestamp) {
+      cursorStarsFrame = 0;
+      const elapsedFrame = cursorStarsLastFrame ? Math.min(timestamp - cursorStarsLastFrame, 32) : 16;
+      cursorStarsLastFrame = timestamp;
+      cursorStarsContext.clearRect(0, 0, window.innerWidth, window.innerHeight);
+
+      for (let index = cursorStars.length - 1; index >= 0; index--) {
+        const star = cursorStars[index];
+        star.life -= elapsedFrame;
+        star.x += star.vx * elapsedFrame / 16;
+        star.y += star.vy * elapsedFrame / 16;
+        star.vy += 0.018 * elapsedFrame / 16;
+
+        if (star.life <= 0) {
+          cursorStars.splice(index, 1);
+          continue;
+        }
+
+        const speed = Math.hypot(star.vx, star.vy) || 1;
+        const tailX = star.x - star.vx / speed * star.length;
+        const tailY = star.y - star.vy / speed * star.length;
+        const fade = Math.min(1, star.life / 180);
+        const trail = cursorStarsContext.createLinearGradient(tailX, tailY, star.x, star.y);
+        trail.addColorStop(0, `${star.color}00`);
+        trail.addColorStop(0.72, `${star.color}aa`);
+        trail.addColorStop(1, "rgba(255,255,255,0.96)");
+
+        cursorStarsContext.globalAlpha = fade;
+        cursorStarsContext.strokeStyle = trail;
+        cursorStarsContext.lineWidth = star.width;
+        cursorStarsContext.lineCap = "round";
+        cursorStarsContext.shadowColor = star.color;
+        cursorStarsContext.shadowBlur = 9;
+        cursorStarsContext.beginPath();
+        cursorStarsContext.moveTo(tailX, tailY);
+        cursorStarsContext.lineTo(star.x, star.y);
+        cursorStarsContext.stroke();
+        cursorStarsContext.shadowBlur = 0;
+        cursorStarsContext.fillStyle = "#ffffff";
+        cursorStarsContext.beginPath();
+        cursorStarsContext.arc(star.x, star.y, star.width * 0.8, 0, Math.PI * 2);
+        cursorStarsContext.fill();
+      }
+
+      cursorStarsContext.globalAlpha = 1;
+      if (cursorStars.length) cursorStarsFrame = requestAnimationFrame(drawCursorStars);
+      else cursorStarsLastFrame = 0;
+    }
+
+    function addCursorStars(event) {
+      if (!desktopPointer.matches || window.matchMedia("(prefers-reduced-motion: reduce)").matches || docRoot.getAttribute("data-theme") !== "dark") {
+        previousPointer = null;
+        return;
+      }
+
+      const currentPointer = { x: event.clientX, y: event.clientY };
+      if (previousPointer) {
+        const deltaX = currentPointer.x - previousPointer.x;
+        const deltaY = currentPointer.y - previousPointer.y;
+        const distance = Math.hypot(deltaX, deltaY);
+
+        if (distance > 3) {
+          const direction = Math.atan2(deltaY, deltaX);
+          const count = Math.min(5, Math.max(1, Math.ceil(distance / 18)));
+          for (let index = 0; index < count && cursorStars.length < 180; index++) {
+            const angle = direction + (Math.random() - 0.5) * 0.7;
+            const speed = 2.5 + Math.random() * 4.5;
+            cursorStars.push({
+              x: currentPointer.x + (Math.random() - 0.5) * 8,
+              y: currentPointer.y + (Math.random() - 0.5) * 8,
+              vx: Math.cos(angle) * speed,
+              vy: Math.sin(angle) * speed,
+              length: 14 + Math.random() * 28,
+              width: 0.8 + Math.random() * 1.2,
+              life: 320 + Math.random() * 360,
+              color: cursorStarColors[Math.floor(Math.random() * cursorStarColors.length)],
+            });
+          }
+          if (cursorStars.length && !cursorStarsFrame) cursorStarsFrame = requestAnimationFrame(drawCursorStars);
+        }
+      }
+      previousPointer = currentPointer;
+    }
+
+    resizeCursorStarsCanvas();
+    window.addEventListener("resize", resizeCursorStarsCanvas, { passive: true });
+    window.addEventListener("pointermove", addCursorStars, { passive: true });
+    document.documentElement.addEventListener("pointerleave", () => {
+      previousPointer = null;
+    });
+    window.addEventListener("blur", () => {
+      previousPointer = null;
+    });
+
+    new MutationObserver(() => {
+      if (docRoot.getAttribute("data-theme") !== "dark") {
+        cursorStars.length = 0;
+        previousPointer = null;
+        if (cursorStarsFrame) cancelAnimationFrame(cursorStarsFrame);
+        cursorStarsFrame = 0;
+        cursorStarsLastFrame = 0;
+        cursorStarsContext.clearRect(0, 0, window.innerWidth, window.innerHeight);
+      }
+    }).observe(docRoot, { attributes: true, attributeFilter: ["data-theme"] });
+
+  </script>
+
+  <script>
+    // Touch-only sparkle trail; keep particles bounded and skip reduced-motion users.
+    const sparkleCanvas = document.getElementById("touchSparkleCanvas");
+    const sparkleContext = sparkleCanvas.getContext("2d");
+    const touchSparkles = [];
+    const sparkleColors = ["#38bdf8", "#34d399", "#fbbf24", "#f472b6", "#ffffff"];
+    const touchSparklesEnabled = window.innerWidth <= 1024 &&
+      !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    let lastSparkleTime = 0;
+    let sparkleFrame = 0;
+
+    function resizeSparkleCanvas() {
+      const pixelRatio = Math.min(window.devicePixelRatio || 1, 1.5);
+      sparkleCanvas.width = Math.round(window.innerWidth * pixelRatio);
+      sparkleCanvas.height = Math.round(window.innerHeight * pixelRatio);
+      sparkleContext.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
+    }
+
+    function addTouchSparkles(x, y, count) {
+      for (let index = 0; index < count && touchSparkles.length < 320; index++) {
+        const angle = Math.random() * Math.PI * 2;
+        const speed = 0.3 + Math.random() * 1.5;
+        touchSparkles.push({
+          x: x + (Math.random() - 0.5) * 18,
+          y: y + (Math.random() - 0.5) * 18,
+          vx: Math.cos(angle) * speed,
+          vy: Math.sin(angle) * speed - 0.35,
+          size: 0.8 + Math.random() * 1.8,
+          life: 450 + Math.random() * 500,
+          color: sparkleColors[Math.floor(Math.random() * sparkleColors.length)],
+        });
+      }
+      if (!sparkleFrame) sparkleFrame = requestAnimationFrame(drawTouchSparkles);
+    }
+
+    function drawTouchSparkles(timestamp) {
+      sparkleFrame = 0;
+      sparkleContext.clearRect(0, 0, window.innerWidth, window.innerHeight);
+      for (let index = touchSparkles.length - 1; index >= 0; index--) {
+        const particle = touchSparkles[index];
+        const elapsed = Math.min(timestamp - (particle.lastTime || timestamp), 32);
+        particle.lastTime = timestamp;
+        particle.life -= elapsed;
+        particle.x += particle.vx * elapsed * 0.06;
+        particle.y += particle.vy * elapsed * 0.06;
+        particle.vy += 0.002 * elapsed;
+        if (particle.life <= 0) {
+          touchSparkles.splice(index, 1);
+          continue;
+        }
+        sparkleContext.globalAlpha = Math.min(1, particle.life / 220);
+        sparkleContext.fillStyle = particle.color;
+        sparkleContext.beginPath();
+        sparkleContext.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
+        sparkleContext.fill();
+      }
+      sparkleContext.globalAlpha = 1;
+      if (touchSparkles.length) sparkleFrame = requestAnimationFrame(drawTouchSparkles);
+    }
+
+    if (touchSparklesEnabled) {
+      resizeSparkleCanvas();
+      window.addEventListener("resize", resizeSparkleCanvas, { passive: true });
+      window.addEventListener("touchstart", (event) => {
+        const touch = event.touches[0];
+        if (touch) addTouchSparkles(touch.clientX, touch.clientY, 18);
+      }, { passive: true });
+      window.addEventListener("touchmove", (event) => {
+        const now = performance.now();
+        if (now - lastSparkleTime < 28) return;
+        lastSparkleTime = now;
+        const touch = event.touches[0];
+        if (touch) addTouchSparkles(touch.clientX, touch.clientY, 10);
+      }, { passive: true });
+    }
   </script>
 
 </body>
